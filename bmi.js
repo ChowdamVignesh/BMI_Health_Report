@@ -1105,11 +1105,11 @@ function downloadPDF() {
   report.classList.add("pdf-mode");
 
   html2canvas(report, {
-    scale: 4,
+    scale: 2,
     useCORS: true,
     allowTaint: true,
-    // backgroundColor: "#ffffff",
-    backgroundColor: null,
+    backgroundColor: "#ffffff",
+    // backgroundColor: null,
     allowTaint: true,
     removeContainer: true,
     logging: false,
@@ -1117,6 +1117,13 @@ function downloadPDF() {
     scrollY: -window.scrollY,
     windowWidth: document.documentElement.scrollWidth,
     windowHeight: document.documentElement.scrollHeight,
+    imageTimeout: 15000,
+
+    foreignObjectRendering: false,
+
+    onclone: (doc) => {
+      doc.querySelector("#report").classList.add("pdf-mode");
+    },
   })
     .then((canvas) => {
       const imgData = canvas.toDataURL("image/png", 1.0);
@@ -1152,12 +1159,10 @@ function downloadPDF() {
         pdf.addImage(
           imgData,
           "PNG",
-          0,
-          position,
-          imgWidth,
-          imgHeight,
-          "",
-          "FAST",
+          margin,
+          position + margin,
+          pageWidth - margin * 2,
+          (canvas.height * (pageWidth - margin * 2)) / canvas.width,
         );
         heightLeft -= pageHeight;
       }

@@ -2834,104 +2834,96 @@ img {
   }
 }
 
-/*======================================
-          TABLETS
-=======================================*/
+/* ===========================================
+   MOBILE FULL WIDTH FIX
+=========================================== */
 
-@media (max-width: 768px) {
+@media screen and (max-width: 768px) {
+  html,
   body {
-    padding: 18px;
+    width: 100%;
+    margin: 0;
+    padding: 0 !important;
+    overflow-x: hidden;
   }
 
   .container {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 12px !important;
+    border-radius: 0;
+  }
+
+  #report,
+  .premium-report {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 16px !important;
+    border-radius: 0;
+  }
+
+  .report-section {
+    margin-bottom: 16px;
+    padding: 16px;
+  }
+
+  .charts-grid,
+  .metrics-grid,
+  .info-grid,
+  .dual-layout {
+    grid-template-columns: 1fr !important;
+    gap: 16px !important;
+  }
+
+  .chart-card,
+  .metric,
+  .metric-card,
+  .info-card {
     width: 100%;
+    margin: 0;
+  }
+
+  .chart-body {
+    padding: 15px;
+  }
+
+  .chart-body canvas {
+    width: 100% !important;
+    height: 240px !important;
+  }
+}
+@media screen and (max-width: 480px) {
+  html,
+  body {
+    padding: 0 !important;
+  }
+
+  .container {
+    padding: 8px !important;
+  }
+
+  #report,
+  .premium-report {
+    padding: 12px !important;
+    border-radius: 0;
+  }
+
+  .report-section {
+    padding: 14px;
+    margin-bottom: 14px;
   }
 
   .report-header {
-    flex-direction: column;
-
-    text-align: center;
-
-    gap: 18px;
-  }
-
-  .info-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .metrics-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .metric-card {
-    padding: 22px;
-  }
-
-  .report-section {
-    padding: 20px;
-  }
-
-  .table-wrapper {
-    overflow-x: auto;
-
-    border-radius: 18px;
-  }
-
-  .bmi-table {
-    min-width: 650px;
-  }
-}
-
-/*======================================
-        SMALL MOBILES
-=======================================*/
-
-@media (max-width: 480px) {
-  body {
-    padding: 12px;
-  }
-
-  .premium-report {
-    padding: 15px;
-
-    border-radius: 20px;
-  }
-
-  .report-section {
     padding: 16px;
-
-    border-radius: 18px;
-  }
-
-  .header-text h2 {
-    font-size: 1.35rem;
-  }
-
-  .header-text p {
-    font-size: 0.88rem;
   }
 
   .logo-circle {
-    width: 65px;
-
-    height: 65px;
-
-    font-size: 1.8rem;
-  }
-
-  .metric h4 {
-    font-size: 1.15rem;
-  }
-
-  .metric-card h2 {
-    font-size: 1.8rem;
-  }
-
-  .risk-badge {
-    width: 100%;
+    width: 60px;
+    height: 60px;
   }
 }
-
 /*======================================
         PRINT / PDF
 =======================================*/
@@ -3405,48 +3397,132 @@ button:hover {
     height: 230px !important;
   }
 }
-/* ================= PDF EXPORT ================= */
+/* ===========================
+   PDF MODE
+=========================== */
 
+.pdf-mode,
 .pdf-mode * {
-  color: #1f2937 !important;
+  animation: none !important;
+  transition: none !important;
 }
 
-.pdf-mode .report-card,
+.pdf-mode .premium-report,
+.pdf-mode .report-section,
+.pdf-mode .chart-card,
+.pdf-mode .metric,
 .pdf-mode .metric-card,
 .pdf-mode .info-card,
-.pdf-mode .chart-card,
-.pdf-mode .result-card,
-.pdf-mode .patient-card {
-  background: #ffffff !important;
+.pdf-mode .gauge-center {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
 
-  border: 2px solid #d1d5db !important;
+  background: #ffffff !important;
 
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08) !important;
 
-  backdrop-filter: none !important;
+  filter: none !important;
+}
 
-  -webkit-backdrop-filter: none !important;
+.pdf-mode *,
+.pdf-mode *::before,
+.pdf-mode *::after {
+  filter: none !important;
+
+  transform: none !important;
+
+  opacity: 1 !important;
+}
+
+.pdf-mode canvas {
+  animation: none !important;
+}
+
+.pdf-mode .chart-loader {
+  display: none !important;
+}
+
+.pdf-mode body::before,
+.pdf-mode body::after {
+  display: none !important;
+}
+
+.pdf-mode .premium-report::before,
+.pdf-mode .premium-report::after {
+  display: none !important;
+}
+
+.pdf-mode table {
+  border-collapse: collapse !important;
+}
+
+.pdf-mode th,
+.pdf-mode td {
+  border: 1px solid #d9d9d9 !important;
+
+  color: #000 !important;
 }
 
 .pdf-mode h1,
 .pdf-mode h2,
-.pdf-mode h3 {
-  color: #1565c0 !important;
-}
-
+.pdf-mode h3,
+.pdf-mode h4,
+.pdf-mode h5,
 .pdf-mode p,
 .pdf-mode span,
-.pdf-mode label,
-.pdf-mode td,
-.pdf-mode th {
-  color: #374151 !important;
+.pdf-mode label {
+  color: #000 !important;
+}
+.chart-body canvas {
+  height: 300px !important;
+
+  width: 100% !important;
+}
+.pdf-mode .chart-body canvas {
+  height: auto !important;
+
+  max-height: 300px !important;
+}
+/* ==========================
+   PDF BORDER IMPROVEMENT
+========================== */
+
+.pdf-mode .report-section,
+.pdf-mode .metric,
+.pdf-mode .metric-card,
+.pdf-mode .info-card,
+.pdf-mode .chart-card,
+.pdf-mode .table-wrapper {
+  border: 2px solid #9ca3af !important;
+
+  border-radius: 16px !important;
+
+  background: #ffffff !important;
+
+  box-shadow: none !important;
 }
 
-.pdf-mode .value {
-  color: #0d47a1 !important;
-  font-weight: 700;
+.pdf-mode .bmi-table {
+  border: 2px solid #9ca3af !important;
+}
+
+.pdf-mode .bmi-table th,
+.pdf-mode .bmi-table td {
+  border: 1px solid #cbd5e1 !important;
+}
+
+.pdf-mode h3 {
+  border-bottom: 2px solid #2563eb;
+  padding-bottom: 8px;
+  margin-bottom: 20px;
+}
+
+.pdf-mode .report-header {
+  border: 2px solid #2563eb !important;
+  border-radius: 18px;
 }
 
 .pdf-mode canvas {
-  background: white !important;
+  border: 1px solid #d1d5db;
+  border-radius: 12px;
 }
