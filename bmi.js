@@ -1159,10 +1159,12 @@ function downloadPDF() {
         pdf.addImage(
           imgData,
           "PNG",
-          margin,
-          position + margin,
-          pageWidth - margin * 2,
-          (canvas.height * (pageWidth - margin * 2)) / canvas.width,
+          0,
+          position,
+          imgWidth,
+          imgHeight,
+          "",
+          "FAST",
         );
         heightLeft -= pageHeight;
       }
