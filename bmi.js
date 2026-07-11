@@ -1097,85 +1097,109 @@ function renderCharts(
 function downloadPDF() {
   const report = document.getElementById("report");
 
-  // Store original styles
-  const originalBg = report.style.background;
-  const originalColor = report.style.color;
+  if (!report) {
+    alert("Report section not found!");
+    return;
+  }
 
-  // Add PDF mode
+  // Check device
+  const isMobile = window.innerWidth <= 768;
+
+  // Store original width
+  const oldWidth = report.style.width;
+
+  // Force desktop width for better PDF on mobile
+  if (isMobile) {
+    report.style.width = "1200px";
+  }
+
+  // Enable PDF mode
   report.classList.add("pdf-mode");
 
-  html2canvas(report, {
-    scale: 2,
-    useCORS: true,
-    allowTaint: true,
-    backgroundColor: "#ffffff",
-    // backgroundColor: null,
-    allowTaint: true,
-    removeContainer: true,
-    logging: false,
-    scrollX: 0,
-    scrollY: -window.scrollY,
-    windowWidth: document.documentElement.scrollWidth,
-    windowHeight: document.documentElement.scrollHeight,
-    imageTimeout: 15000,
+  // Wait for layout to update
+  setTimeout(() => {
+    html2canvas(report, {
+      scale: isMobile ? 1.5 : 2,
+      useCORS: true,
+      allowTaint: true,
+      backgroundColor: "#ffffff",
+      logging: false,
+      scrollX: 0,
+      scrollY: -window.scrollY,
+      windowWidth: report.scrollWidth,
+      windowHeight: report.scrollHeight,
+      imageTimeout: 15000,
+      foreignObjectRendering: false,
+      removeContainer: true,
 
-    foreignObjectRendering: false,
+      onclone: (doc) => {
+        const clonedReport = doc.querySelector("#report");
+        if (clonedReport) {
+          clonedReport.classList.add("pdf-mode");
+        }
+      },
+    })
+      .then((canvas) => {
+        const imgData = canvas.toDataURL("image/png", 1.0);
 
-    onclone: (doc) => {
-      doc.querySelector("#report").classList.add("pdf-mode");
-    },
-  })
-    .then((canvas) => {
-      const imgData = canvas.toDataURL("image/png", 1.0);
+        const { jsPDF } = window.jspdf;
 
-      const { jsPDF } = window.jspdf;
+        const pdf = new jsPDF("p", "mm", "a4");
 
-      const pdf = new jsPDF("p", "mm", "a4");
+        const pageWidth = pdf.internal.pageSize.getWidth();
+        const pageHeight = pdf.internal.pageSize.getHeight();
 
-      const pageWidth = 210;
-      const pageHeight = 297;
+        const margin = isMobile ? 8 : 5;
 
-      const imgWidth = pageWidth;
-      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+        const imgWidth = pageWidth - margin * 2;
+        const imgHeight = (canvas.height * imgWidth) / canvas.width;
 
-      let heightLeft = imgHeight;
-      let position = 0;
+        let heightLeft = imgHeight;
+        let position = 0;
 
-      pdf.addImage(
-        imgData,
-        "PNG",
-        0,
-        position,
-        imgWidth,
-        imgHeight,
-        "",
-        "FAST",
-      );
-      heightLeft -= pageHeight;
-
-      while (heightLeft > 0) {
-        position = heightLeft - imgHeight;
-        pdf.addPage();
+        // First page
         pdf.addImage(
           imgData,
           "PNG",
-          0,
-          position,
+          margin,
+          margin,
           imgWidth,
           imgHeight,
           "",
           "FAST",
         );
+
         heightLeft -= pageHeight;
-      }
 
-      pdf.save("Premium_BMI_Health_Report.pdf");
+        // Remaining pages
+        while (heightLeft > 0) {
+          position = heightLeft - imgHeight;
 
-      // Restore website
-      report.classList.remove("pdf-mode");
-    })
-    .catch((err) => {
-      report.classList.remove("pdf-mode");
-      console.log(err);
-    });
+          pdf.addPage();
+
+          pdf.addImage(
+            imgData,
+            "PNG",
+            margin,
+            position + margin,
+            imgWidth,
+            imgHeight,
+            "",
+            "FAST",
+          );
+
+          heightLeft -= pageHeight;
+        }
+
+        pdf.save("Premium_BMI_Health_Report.pdf");
+      })
+      .catch((err) => {
+        console.error("PDF Generation Error:", err);
+      })
+      .finally(() => {
+        // Restore original layout
+        report.classList.remove("pdf-mode");
+        report.style.width = oldWidth;
+      });
+  }, 200);
 }
